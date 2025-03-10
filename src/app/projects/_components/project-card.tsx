@@ -27,7 +27,7 @@ interface ProjectCardProps extends Project {
   href: string;
   thumbnail: string;
   className?: string;
-  design: Boolean;
+  design: boolean;
 }
 
 interface ImageModalProps {

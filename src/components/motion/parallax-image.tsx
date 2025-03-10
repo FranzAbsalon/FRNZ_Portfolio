@@ -15,6 +15,7 @@ interface ParallaxImageProps extends Omit<ImageProps, 'ref'> {
     scaleStart?: number;
     scaleEnd?: number;
   };
+  alt: string;
 }
 
 const ParallaxImage = ({
@@ -45,7 +46,7 @@ const ParallaxImage = ({
       className={cn('relative w-full overflow-hidden', containerClassName)}
       style={{ y, scale }}
     >
-      <Image className={cn('object-cover', className)} fill {...props} src={src}/>
+      <Image className={cn('object-cover', className)} fill {...props} src={src}  alt={props.alt || "Parallax image"}/>
     </motion.div>
   );
 };

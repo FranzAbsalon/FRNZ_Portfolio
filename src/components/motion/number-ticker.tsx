@@ -68,7 +68,7 @@ const NumberTicker = forwardRef<NumberTickerRef, NumberTickerProps>(
         }
       });
       setControls(newControls);
-    }, []);
+    }, [controls, count, from, onComplete, onStart, target, transition]);
 
     // Expose the startAnimation function via ref
     useImperativeHandle(ref, () => ({
@@ -80,7 +80,7 @@ const NumberTicker = forwardRef<NumberTickerRef, NumberTickerProps>(
         startAnimation();
       }
       return () => controls?.stop();
-    }, [autoStart]);
+    }, [autoStart, controls, startAnimation]);
 
     return (
       <motion.span className={cn(className)} {...props}>
