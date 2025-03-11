@@ -44,7 +44,7 @@ export default function Line({
     }
   };
 
-  const manageMouseMove = (e: MouseEvent) => {
+  const manageMouseMove = useCallback((e: MouseEvent) => {
     const { movementY, clientX } = e;
 
     const pathBound = path.current?.getBoundingClientRect();
@@ -54,7 +54,7 @@ export default function Line({
       progress += movementY;
       setPath(progress);
     }
-  };
+  }, [x]);
 
   const manageMouseLeave = () => {
     animateOut();
