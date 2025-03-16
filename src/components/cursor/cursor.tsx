@@ -60,7 +60,7 @@ export default function Cursor() {
     const { clientX, clientY } = e;
     mouse.x.set(clientX - cursorSize / 2);
     mouse.y.set(clientY - cursorSize / 2);
-  }, []);
+  }, [isVisible, cursorSize, mouse.x, mouse.y]);
 
   const manageMouseLeave = () => {
     setIsVisible(false);

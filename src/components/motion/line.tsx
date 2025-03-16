@@ -16,30 +16,30 @@ export default function Line({
 }) {
   const path = useRef<SVGPathElement>(null);
 
-  let progress = 0;
-  let x = 0.5;
-  let time = Math.PI / 2;
-  let reqId: number | null = null;
+  const progress = useRef(0);
+  const x = useRef(0.5);
+  const time = useRef(Math.PI / 2);
+  const reqId = useRef<number | null>(null);
 
-  const setPath = useCallback((progress: number) => {
+  const setPath = useCallback((progressValue: number) => {
     const width = window.innerWidth * 1;
 
     path.current?.setAttributeNS(
       null,
       'd',
-      `M0 250 Q${width * x} ${250 + progress}, ${width} 250`
+      `M0 250 Q${width * x.current} ${250 + progressValue}, ${width} 250`
     );
   }, []);
 
   useEffect(() => {
-    setPath(progress);
-  }, [progress, setPath]);
+    setPath(progress.current);
+  }, [setPath]);
 
   const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
 
   const manageMouseEnter = () => {
-    if (reqId) {
-      cancelAnimationFrame(reqId);
+    if (reqId.current) {
+      cancelAnimationFrame(reqId.current);
       resetAnimation();
     }
   };
@@ -50,46 +50,40 @@ export default function Line({
     const pathBound = path.current?.getBoundingClientRect();
 
     if (pathBound) {
-      x = (clientX - pathBound.left) / pathBound.width;
-      progress += movementY;
-      setPath(progress);
+      x.current = (clientX - pathBound.left) / pathBound.width;
+      progress.current += movementY;
+      setPath(progress.current);
     }
-  }, [x]);
+  }, [setPath]);
 
   const manageMouseLeave = () => {
     animateOut();
   };
 
   const animateOut = () => {
-    const newProgress = progress * Math.sin(time);
-    progress = lerp(progress, 0, 0.025);
-    time += 0.2;
+    const newProgress = progress.current * Math.sin(time.current);
+    progress.current = lerp(progress.current, 0, 0.025);
+    time.current += 0.2;
     setPath(newProgress);
 
-    if (Math.abs(progress) > 0.75) {
-      reqId = requestAnimationFrame(animateOut);
+    if (Math.abs(progress.current) > 0.75) {
+      reqId.current = requestAnimationFrame(animateOut);
     } else {
       resetAnimation();
     }
   };
 
   const resetAnimation = () => {
-    time = Math.PI / 2;
-    progress = 0;
+    time.current = Math.PI / 2;
+    progress.current = 0;
   };
 
   return (
     <div className={cn('relative h-px w-full', className)}>
       <div
-        onMouseEnter={() => {
-          manageMouseEnter();
-        }}
-        onMouseMove={(e) => {
-          manageMouseMove(e);
-        }}
-        onMouseLeave={() => {
-          manageMouseLeave();
-        }}
+        onMouseEnter={manageMouseEnter}
+        onMouseMove={manageMouseMove}
+        onMouseLeave={manageMouseLeave}
         className="relative top-[-40px] z-10 h-10 w-full"
       ></div>
       <svg className="absolute top-[-250px] h-[500px] w-full">
